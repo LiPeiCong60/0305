@@ -25,13 +25,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 2. 按 HTTP 动词精细放行
-        // 放行：POST /api/users
+        // 放行：POST /api/users（注册）
         boolean isCreateUser = "POST".equalsIgnoreCase(method) && "/api/users".equals(uri);
 
-        // 放行：GET /api/users/{id}
-        boolean isGetUser = "GET".equalsIgnoreCase(method) && uri.matches("^/api/users/\\d+$");
-
-        if (isCreateUser || isGetUser) {
+        if (isCreateUser) {
             return true;
         }
 
