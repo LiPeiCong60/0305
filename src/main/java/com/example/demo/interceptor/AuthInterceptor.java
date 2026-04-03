@@ -13,42 +13,34 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-            HttpServletResponse response,
-            Object handler) throws Exception {
+                             HttpServletResponse response,
+                             Object handler) throws Exception {
 
         String method = request.getMethod();
         String uri = request.getRequestURI();
 
-        // 1. 登录接口放行
+        // 放行登录接口: POST /api/users/login
         if ("POST".equalsIgnoreCase(method) && "/api/users/login".equals(uri)) {
             return true;
         }
 
-        // 2. 按 HTTP 动词精细放行
-        // 放行：POST /api/users（注册）
-        boolean isCreateUser = "POST".equalsIgnoreCase(method) && "/api/users".equals(uri);
-
-        if (isCreateUser) {
+        // 放行注册接口: POST /api/users
+        if ("POST".equalsIgnoreCase(method) && "/api/users".equals(uri)) {
             return true;
         }
 
-        // 3. 其余接口必须校验 Authorization
+        // 其余接口检查 Authorization
         String token = request.getHeader("Authorization");
-
         if (token == null || token.trim().isEmpty()) {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
-
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
             Result<Object> result = Result.error(ResultCode.TOKEN_INVALID);
-            String json = objectMapper.writeValueAsString(result);
-
-            response.getWriter().write(json);
+            response.getWriter().write(objectMapper.writeValueAsString(result));
             return false;
         }
 
-        // 4. 有 token，放行
         return true;
     }
 }
