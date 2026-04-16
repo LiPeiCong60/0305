@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local Temp ###
+.m2repo/
+.tmp_pdf_pages/
+*.log

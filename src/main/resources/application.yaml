@@ -6,3 +6,15 @@ spring:
     url: jdbc:mysql://localhost:3306/lab_db?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8
     username: root
     password: mysql123
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+  sql:
+    init:
+      mode: always
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
