@@ -10,6 +10,7 @@ import com.example.demo.entity.User;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.mapper.UserInfoMapper;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import com.example.demo.vo.UserDetailVO;
 import org.slf4j.Logger;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -33,13 +33,16 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserInfoMapper userInfoMapper;
     private final StringRedisTemplate redisTemplate;
+    private final JwtUtil jwtUtil;
 
     public UserServiceImpl(UserMapper userMapper,
                            UserInfoMapper userInfoMapper,
-                           StringRedisTemplate redisTemplate) {
+                           StringRedisTemplate redisTemplate,
+                           JwtUtil jwtUtil) {
         this.userMapper = userMapper;
         this.userInfoMapper = userInfoMapper;
         this.redisTemplate = redisTemplate;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -81,8 +84,8 @@ public class UserServiceImpl implements UserService {
             return Result.error(ResultCode.PASSWORD_ERROR);
         }
 
-        String token = "Bearer " + UUID.randomUUID();
-        return Result.success(token);
+        String jwt = jwtUtil.generateToken(userDTO.getUsername());
+        return Result.success(jwt);
     }
 
     @Override
