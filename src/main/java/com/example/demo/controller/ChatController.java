@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.common.Result;
+import com.example.demo.common.ResultCode;
 import com.example.demo.model.dto.ChatRequestDTO;
 import com.example.demo.model.vo.ChatResponseVO;
 import com.example.demo.service.ChatService;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -21,8 +23,13 @@ public class ChatController {
 
     @PostMapping
     public Result<ChatResponseVO> chat(@RequestBody ChatRequestDTO requestDTO) {
-        String answer = chatService.chat(requestDTO.getMessage());
-        ChatResponseVO responseVO = new ChatResponseVO(requestDTO.getMessage(), answer);
+        if (requestDTO == null
+                || !StringUtils.hasText(requestDTO.getSessionId())
+                || !StringUtils.hasText(requestDTO.getMessage())) {
+            return Result.error(ResultCode.ERROR);
+        }
+
+        ChatResponseVO responseVO = chatService.chat(requestDTO);
         return Result.success(responseVO);
     }
 }

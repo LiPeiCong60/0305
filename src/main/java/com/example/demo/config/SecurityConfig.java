@@ -35,7 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/users", "POST"),
-                                new AntPathRequestMatcher("/api/users/login", "POST")
+                                new AntPathRequestMatcher("/api/users/login", "POST"),
+                                new AntPathRequestMatcher("/api/chat", "POST")
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
